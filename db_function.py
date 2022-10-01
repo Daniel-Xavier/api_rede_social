@@ -48,17 +48,18 @@ def create_comentarios(id: int, texto: str, usuario_id: int, post_id: int):
     return comment
 
 
+def get_usuarios(id: int = None, nome: str = None):
 
-def get_usuarios(id: int = None, idade: int = None):
-
-    query = select(Usuario)
+    # query = select(Usuario).join(Post, Post.usuario_id==Usuario.id,isouter=True)
+    query = select(Usuario).options(joinedload('*'))
+    
     if id:
         query = query.where(Usuario.id == id)
-    if idade:
-        query = query.where(Usuario.idade == idade)
+    if nome:
+        query = query.where(Usuario.nome == nome)
 
     with Session(engine) as session:
-        result = session.execute(query).scalars().all()
+        result = session.execute(query).scalars().unique().all()
 
     return result
 
@@ -68,7 +69,7 @@ def get_posts(id: int = None, usuario_id: int = None):
     if id:
         query = query.where(Post.id == id)
     if usuario_id:
-        query = query.where(Usuario.id == usuario_id)
+        query = query.where(Post.usuario_id == usuario_id)
         # query = select(Usuario.nome)
 
     with Session(engine) as session:

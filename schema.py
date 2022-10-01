@@ -9,36 +9,45 @@ class Usuario:
     id: int
     nome: str
     idade: int
+    posts: List['Post']
+    reacoes: List['Reacoes']
+    comentarios: List['Comentarios']
 
 @strawberry.type
 class Post:
     id: int
     texto: str
-    usuario_id: int
-    comentario_id: int
-    reacao_id: int
-@strawberry.type
-class Comentarios:
-    id: int
-    texto: str
-    usuario_id: int
-    post_id: int
+    usuario: List[Usuario]
+    reacoes: List['Reacoes']
+    comentarios: List['Comentarios']
+
 @strawberry.type
 class Reacoes:
     id: int
     tipo: bool
-    usuario_id: int
-    post_id: int
+    usuario: List[Usuario]
+    posts: List[Post]
+
+@strawberry.type
+class Comentarios:
+    id: int
+    texto: str
+    usuario: List[Usuario]
+    posts: List[Post]
+
 @strawberry.type
 class Query:
     all_usuarios: List[Usuario] = strawberry.field(resolver=get_usuarios)
     all_posts: List[Post] = strawberry.field(resolver=get_posts)
     all_comentarios: List[Comentarios] = strawberry.field(resolver=get_comentarios)
+
+
 @strawberry.type
 class Mutation:
     create_usuario: Usuario = strawberry.field(resolver=create_usuarios)
     create_post: Post = strawberry.field(resolver=create_posts)
     create_comentario: Comentarios = strawberry.field(resolver=create_comentarios)
+
 
 schema = strawberry.Schema(
     query=Query,
