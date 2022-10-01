@@ -1,4 +1,3 @@
-import re
 from typing import List
 import strawberry
 from strawberry.fastapi import GraphQLRouter
