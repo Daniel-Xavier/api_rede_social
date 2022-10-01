@@ -1,4 +1,3 @@
-import re
 from sqlmodel import Session, select
 from sqlalchemy.orm import joinedload
 from models import Usuario, Reacoes, Post, Comentarios, engine
@@ -38,7 +37,7 @@ def create_reacao(id: int, tipo: bool, usuario_id: int, post_id: int):
     return react
 
 
-def create_comentario(id: int, texto: str, usuario_id: int, post_id: int):
+def create_comentarios(id: int, texto: str, usuario_id: int, post_id: int):
     comment = Comentarios(id=id, texto=texto, usuario_id=usuario_id, post_id=post_id)
 
     with Session(engine) as session:
@@ -53,7 +52,6 @@ def create_comentario(id: int, texto: str, usuario_id: int, post_id: int):
 def get_usuarios(id: int = None, idade: int = None):
 
     query = select(Usuario)
-
     if id:
         query = query.where(Usuario.id == id)
     if idade:
@@ -64,14 +62,23 @@ def get_usuarios(id: int = None, idade: int = None):
 
     return result
 
-def get_post(id: int = None, usuario_id: int = None):
+def get_posts(id: int = None, usuario_id: int = None):
 
     query = select(Post)
-
     if id:
         query = query.where(Post.id == id)
     if usuario_id:
         query = query.where(Usuario.id == usuario_id)
+        # query = select(Usuario.nome)
+
+    with Session(engine) as session:
+        result = session.execute(query).scalars().all()
+
+    return result
+
+def get_comentarios(id: int = None, usuario_id: int = None):
+
+    query = select(Comentarios)
 
     with Session(engine) as session:
         result = session.execute(query).scalars().all()
