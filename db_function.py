@@ -65,7 +65,7 @@ def get_usuarios(id: int = None, nome: str = None):
 
 def get_posts(id: int = None, usuario_id: int = None):
 
-    query = select(Post)
+    query = select(Post).options(joinedload('*'))
     if id:
         query = query.where(Post.id == id)
     if usuario_id:
@@ -73,15 +73,15 @@ def get_posts(id: int = None, usuario_id: int = None):
         # query = select(Usuario.nome)
 
     with Session(engine) as session:
-        result = session.execute(query).scalars().all()
+        result = session.execute(query).scalars().unique().all()
 
     return result
 
 def get_comentarios(id: int = None, usuario_id: int = None):
 
-    query = select(Comentarios)
+    query = select(Comentarios).options(joinedload('*'))
 
     with Session(engine) as session:
-        result = session.execute(query).scalars().all()
+        result = session.execute(query).scalars().unique().all()
 
     return result    
