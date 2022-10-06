@@ -60,7 +60,7 @@ query{
 
 ## Uma consulta que mostra, dentro da lista completa de reações, o percentual de reações positivas e negativas.
 ```
-{
+query{
   porcentagemReacaoes {
     porcentagemLike
     porcentagemDislike
