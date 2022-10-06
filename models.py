@@ -30,7 +30,7 @@ class Post(SQLModel, table=True):
 
 class Reacoes(SQLModel, table=True):
     id: int = Field(primary_key=True)
-    tipo: bool
+    tipo: str
 
     usuario_id: int = Field(default=None, foreign_key='usuario.id')
     post_id:  int = Field(default=None, foreign_key='post.id')
@@ -38,7 +38,7 @@ class Reacoes(SQLModel, table=True):
     usuario: List[Usuario] = Relationship(back_populates='reacoes')
     posts: List['Post'] = Relationship(back_populates='reacoes')
 
-
+    pct_reacoes: List['PctReacoes'] = Relationship(back_populates='reacoes')
 
 class Comentarios(SQLModel, table=True):
     id: int = Field(primary_key=True)
@@ -50,6 +50,15 @@ class Comentarios(SQLModel, table=True):
     usuario: List[Usuario] = Relationship(back_populates='comentarios')
     posts: List['Post'] = Relationship(back_populates='comentarios')
 
+class PctReacoes(SQLModel, table=True):
+    id: Optional[int] = Field(primary_key=True)
+
+    porcentagem_like: Optional[float]
+    porcentagem_dislike: Optional[float]
+
+    reacoes_id: Optional[int] = Field(default=None, foreign_key='reacoes.id')
+    reacoes: List[Reacoes] = Relationship(back_populates='pct_reacoes')
+ 
 
 
 SQLModel.metadata.create_all(engine)

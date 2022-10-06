@@ -1,8 +1,6 @@
 from sqlmodel import Session, select
 from sqlalchemy.orm import joinedload
-from models import Usuario, Reacoes, Post, Comentarios, engine
-
-
+from models import PctReacoes, Usuario, Reacoes, Post, Comentarios, engine
 
 
 def create_usuarios(id: int, idade: int, nome: str):
@@ -26,7 +24,8 @@ def create_posts(id: int, texto: str, usuario_id: int):
 
     return post
 
-def create_reacao(id: int, tipo: bool, usuario_id: int, post_id: int):
+
+def create_react(id: int, tipo: str, usuario_id: int, post_id: int):
     react = Reacoes(id=id, tipo=tipo, usuario_id=usuario_id, post_id=post_id)
 
     with Session(engine) as session:
@@ -50,7 +49,6 @@ def create_comentarios(id: int, texto: str, usuario_id: int, post_id: int):
 
 def get_usuarios(id: int = None, nome: str = None):
 
-    # query = select(Usuario).join(Post, Post.usuario_id==Usuario.id,isouter=True)
     query = select(Usuario).options(joinedload('*'))
     
     if id:
@@ -63,6 +61,7 @@ def get_usuarios(id: int = None, nome: str = None):
 
     return result
 
+
 def get_posts(id: int = None, usuario_id: int = None):
 
     query = select(Post).options(joinedload('*'))
@@ -70,18 +69,69 @@ def get_posts(id: int = None, usuario_id: int = None):
         query = query.where(Post.id == id)
     if usuario_id:
         query = query.where(Post.usuario_id == usuario_id)
-        # query = select(Usuario.nome)
+        
 
     with Session(engine) as session:
         result = session.execute(query).scalars().unique().all()
 
     return result
 
+
 def get_comentarios(id: int = None, usuario_id: int = None):
 
     query = select(Comentarios).options(joinedload('*'))
+
+    if id:
+        query = query.where(Comentarios.id == id)
+    if usuario_id:
+        query = query.where(Comentarios.usuario_id == usuario_id)
 
     with Session(engine) as session:
         result = session.execute(query).scalars().unique().all()
 
     return result    
+
+def get_reacoes(id: int = None, usuario_id: int = None):
+
+    query = select(Reacoes).options(joinedload('*'))
+
+    if id:
+        query = query.where(Comentarios.id == id)
+    if usuario_id:
+        query = query.where(Comentarios.usuario_id == usuario_id)
+
+    with Session(engine) as session:
+        result = session.execute(query).scalars().unique().all()
+
+    return result    
+
+
+def porcentagem_reacao():
+
+    query = select(Reacoes).options(joinedload('*'))
+
+    with Session(engine) as session:
+        result = session.execute(query).scalars().unique().all()
+        
+    lista = result
+    gostei = 0
+    nao_gostei =0
+    for i in lista:
+        print(i)
+        for j in i:
+            for k in j:
+                if k == 'Gostei':
+                    gostei += 1
+                if k == 'Nao Gostei':
+                    nao_gostei += 1
+
+    total = gostei + nao_gostei
+    gosteipct = (gostei/total) * 100
+    nao_gosteipct = nao_gostei/total * 100
+    print(gosteipct)
+    print(nao_gosteipct)
+    Lista = [{'gostei': gosteipct,
+            'nao_gostei': nao_gosteipct
+    }]
+    
+    return Lista    
