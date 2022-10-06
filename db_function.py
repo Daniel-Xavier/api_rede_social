@@ -117,7 +117,6 @@ def porcentagem_reacao():
     gostei = 0
     nao_gostei =0
     for i in lista:
-        print(i)
         for j in i:
             for k in j:
                 if k == 'Gostei':
@@ -128,10 +127,12 @@ def porcentagem_reacao():
     total = gostei + nao_gostei
     gosteipct = (gostei/total) * 100
     nao_gosteipct = nao_gostei/total * 100
-    print(gosteipct)
-    print(nao_gosteipct)
-    Lista = [{'gostei': gosteipct,
-            'nao_gostei': nao_gosteipct
-    }]
     
-    return Lista    
+    resultpct = [
+        PctReacoes(
+            porcentagem_like = gosteipct,
+            porcentagem_dislike = nao_gosteipct),
+            ]
+    
+    
+    return resultpct 

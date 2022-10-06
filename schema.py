@@ -30,6 +30,7 @@ class Reacoes:
     
 @strawberry.type
 class PctReacoes:
+    id: int
     porcentagem_like: float
     porcentagem_dislike: float
     reacoes: Reacoes
@@ -47,6 +48,7 @@ class Query:
     all_posts: List[Post] = strawberry.field(resolver=get_posts)
     all_comentarios: List[Comentarios] = strawberry.field(resolver=get_comentarios)
     all_reacoes: List[Reacoes] = strawberry.field(resolver=get_reacoes)
+
     porcentagem_reacaoes: List[PctReacoes] = strawberry.field(resolver=porcentagem_reacao)
 
 @strawberry.type
